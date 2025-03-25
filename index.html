@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mindful Moments Journal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Quote Section -->
+    <div class="quote-card">
+      <p id="quote-text">"Loading quote..."</p>
+      <button id="new-quote-btn">New Quote</button>
+    </div>
+
+    <!-- Journal Form -->
+    <form id="journal-form">
+      <h2>How are you feeling today?</h2>
+      <select id="mood">
+        <option value="happy">😊 Happy</option>
+        <option value="neutral">😐 Neutral</option>
+        <option value="sad">😢 Sad</option>
+      </select>
+      <textarea id="reflection" placeholder="Write your reflection here..."></textarea>
+      <button type="submit">Save Entry</button>
+    </form>
+
+    <!-- Entries Section -->
+    <div class="entries">
+      <h2>Past Entries</h2>
+      <div class="filter-buttons">
+        <button class="filter-btn" data-mood="all">All</button>
+        <button class="filter-btn" data-mood="happy">😊 Happy</button>
+        <button class="filter-btn" data-mood="neutral">😐 Neutral</button>
+        <button class="filter-btn" data-mood="sad">😢 Sad</button>
+      </div>
+      <div id="entries-list"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
