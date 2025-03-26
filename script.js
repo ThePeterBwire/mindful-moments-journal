@@ -16,3 +16,22 @@ function fetchQuote() {
   });
 }
 
+function fetchEntries() {
+  fetch('https:localhost:3000/entries')
+  .then(response => response.json())
+  .then(entries => renderEntries(entries));
+}
+
+function renderEntries(entries) {
+  entriesList.innerHTML=''; 
+  entries.forEach(entry => {
+    const entryCard = document.createElement('div');
+    entryCard.className = `entry-card ${entry.mood}`;
+    entryCard.innerHTML = `
+    <p><strong>Mood:</strong> ${entry.mood}</p>
+    <p>${entry.reflection}</p>
+    <small>${new Date(entry.date).toLocaleDateString()}</small>
+    `;
+    entriesList.appendChild(entryCard);
+  });
+}
