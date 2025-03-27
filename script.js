@@ -1,37 +1,157 @@
-
 const journalForm = document.getElementById('journal-form');
 const entriesList = document.getElementById('entries-list');
 const quoteText = document.getElementById('quote-text');
 const newQuoteBtn = document.getElementById('new-quote-btn');
+const favoriteQuoteBtn = document.getElementById('favorite-quote-btn');
+const favoritesCount = document.getElementById('favorites-count');
 const filterButtons = document.querySelectorAll('.filter-btn');
+const favoritesModal = document.getElementById('favorites-modal');
+const closeModal = document.querySelector('.close');
+const favoritesList = document.getElementById('favorites-list');
 
-function fetchQuote() {
-  fetch('https://zenquotes.io/api/random')
-  .then(response => response.json())
-  .then(data => {
-    quoteText.textContent = `"${data[0].q}" - ${data[0].a}`;
-  })
-  .catch(() => {
-    quoteText.textContent = "Today is a gift that's why we call it the present!";
+
+let currentQuote = null;
+let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+
+async function fetchQuote() {
+  try {
+    const response = await fetch('https://api.quotable.io/random');
+    if (!response.ok) throw new Error('API request failed');
+    
+    const data = await response.json();
+    currentQuote = {
+      text: data.content,
+      author: data.author || "Unknown"
+    };
+    quoteText.textContent = `"${currentQuote.text}" — ${currentQuote.author}`;
+  } catch (error) {
+    console.error('Quote Error:', error);
+    quoteText.textContent = "Every day is a new opportunity 🌟";
+  }
+}
+
+
+function updateFavorites() {
+  favoritesCount.textContent = favorites.length;
+  localStorage.setItem('favorites', JSON.stringify(favorites));
+  
+  favoritesList.innerHTML = favorites.map((quote, index) => `
+    <div class="favorite-quote-item">
+      <p>"${quote.text}" — ${quote.author}</p>
+      <button onclick="removeFavorite(${index})">🗑️</button>
+    </div>
+  `).join('');
+}
+
+function addToFavorites() {
+  if (currentQuote && !favorites.some(f => f.text === currentQuote.text)) {
+    favorites.push(currentQuote);
+    updateFavorites();
+  }
+}
+
+function removeFavorite(index) {
+  favorites.splice(index, 1);
+  updateFavorites();
+}
+
+
+async function handleJournalSubmit(e) {
+  e.preventDefault(); // Prevent default form submission
+  
+  try {
+    const newEntry = {
+      mood: document.getElementById('mood').value,
+      reflection: document.getElementById('reflection').value,
+      date: new Date().toISOString()
+    };
+
+    // Save entry
+    await fetch('http://localhost:3000/entries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newEntry)
+    });
+
+    // Refresh entries list
+    const response = await fetch('http://localhost:3000/entries');
+    const entries = await response.json();
+    
+    entriesList.innerHTML = entries.map(entry => `
+      <div class="entry-card ${entry.mood}">
+        <p><strong>Mood:</strong> ${entry.mood}</p>
+        <p>${entry.reflection}</p>
+        <small>${new Date(entry.date).toLocaleDateString()}</small>
+      </div>
+    `).join('');
+
+    // Clear form
+    journalForm.reset();
+
+  } catch (error) {
+    console.error('Journal Error:', error);
+    alert('Failed to save entry. Please try again.');
+  }
+}
+
+// Event Listeners
+journalForm.addEventListener('submit', handleJournalSubmit);
+
+filterButtons.forEach(button => {
+  button.addEventListener('click', async () => {
+    try {
+      const mood = button.dataset.mood;
+      const response = await fetch('http://localhost:3000/entries');
+      const entries = await response.json();
+      
+      const filtered = mood === 'all' 
+        ? entries 
+        : entries.filter(e => e.mood === mood);
+        
+      entriesList.innerHTML = filtered.map(entry => `
+        <div class="entry-card ${entry.mood}">
+          <p><strong>Mood:</strong> ${entry.mood}</p>
+          <p>${entry.reflection}</p>
+          <small>${new Date(entry.date).toLocaleDateString()}</small>
+        </div>
+      `).join('');
+      
+    } catch (error) {
+      console.error('Filter Error:', error);
+    }
   });
-}
+});
 
-function fetchEntries() {
-  fetch('https:localhost:3000/entries')
-  .then(response => response.json())
-  .then(entries => renderEntries(entries));
-}
+newQuoteBtn.addEventListener('click', fetchQuote);
+favoriteQuoteBtn.addEventListener('click', addToFavorites);
 
-function renderEntries(entries) {
-  entriesList.innerHTML=''; 
-  entries.forEach(entry => {
-    const entryCard = document.createElement('div');
-    entryCard.className = `entry-card ${entry.mood}`;
-    entryCard.innerHTML = `
-    <p><strong>Mood:</strong> ${entry.mood}</p>
-    <p>${entry.reflection}</p>
-    <small>${new Date(entry.date).toLocaleDateString()}</small>
-    `;
-    entriesList.appendChild(entryCard);
-  });
-}
+// Modal Controls
+favoritesCount.addEventListener('click', () => {
+  favoritesModal.style.display = 'block';
+});
+
+closeModal.addEventListener('click', () => {
+  favoritesModal.style.display = 'none';
+});
+
+window.addEventListener('click', (e) => {
+  if (e.target === favoritesModal) {
+    favoritesModal.style.display = 'none';
+  }
+});
+
+// Initial Setup
+(async () => {
+  await fetchQuote();
+  const response = await fetch('http://localhost:3000/entries');
+  const entries = await response.json();
+  entriesList.innerHTML = entries.map(entry => `
+    <div class="entry-card ${entry.mood}">
+      <p><strong>Mood:</strong> ${entry.mood}</p>
+      <p>${entry.reflection}</p>
+      <small>${new Date(entry.date).toLocaleDateString()}</small>
+    </div>
+  `).join('');
+  updateFavorites();
+})();

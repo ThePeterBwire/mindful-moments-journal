@@ -11,7 +11,17 @@
     <!-- Quote Section -->
     <div class="quote-card">
       <p id="quote-text">"Loading quote..."</p>
-      <button id="new-quote-btn">New Quote</button>
+      <div class="quote-controls">
+        <button id="new-quote-btn">New Quote</button>
+        <button id="favorite-quote-btn">❤️ Favorite</button>
+        <span id="favorites-count" title="View Favorites">0</span>
+      </div>
+      <div id="favorites-modal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h3>Favorite Quotes</h3>
+          <div id="favorites-list"></div>
+        </div>
     </div>
 
     <!-- Journal Form -->

@@ -17,6 +17,70 @@ body {
     margin-bottom: 20px;
     text-align: center;
   }
+
+
+  .quote-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+  }
+
+  #favorite-quote-btn {
+    background-color: #ff9800;
+  }
+
+  #favorite-quote-btn:hover {
+  background-color: #f57c00;
+  }
+
+  #favorites-count {
+  background-color: #e0e0e0;
+  padding: 5px 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  }
+
+  #favorites-count:hover {
+  background-color: #bdbdbd;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+  }
+
+  .modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    width: 70%;
+    max-width: 500px;
+    border-radius: 10px;
+    position: relative;
+  }
+
+  .close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .favorite-quote-item {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #fff3e0;
+    border-radius: 5px;
+  }
   
   #journal-form {
     background-color: #ffffff;
