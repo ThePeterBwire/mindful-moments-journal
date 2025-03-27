@@ -1,4 +1,3 @@
-// DOM Elements
 const journalForm = document.getElementById('journal-form');
 const entriesList = document.getElementById('entries-list');
 const quoteText = document.getElementById('quote-text');
@@ -10,17 +9,14 @@ const favoritesModal = document.getElementById('favorites-modal');
 const closeModal = document.querySelector('.close');
 const favoritesList = document.getElementById('favorites-list');
 
-// Configuration
+
 const API_BASE = 'https://my-json-server.typicode.com/ThePeterBwire/mindful-moments-journal';
 
-// State Management
+
 let currentQuote = null;
 let favorites = [];
 let entries = [];
 
-// ----------------------------
-// QUOTE SYSTEM
-// ----------------------------
 async function fetchQuote() {
   try {
     const response = await fetch('https://api.quotable.io/random');
@@ -38,9 +34,7 @@ async function fetchQuote() {
   }
 }
 
-// ----------------------------
-// FAVORITES SYSTEM (Memory Only)
-// ----------------------------
+
 function updateFavorites() {
   favoritesCount.textContent = favorites.length;
   favoritesList.innerHTML = favorites.map((quote, index) => `
@@ -51,9 +45,7 @@ function updateFavorites() {
   `).join('');
 }
 
-// ----------------------------
-// JOURNAL SYSTEM (Hybrid Approach)
-// ----------------------------
+
 async function loadInitialEntries() {
   try {
     const response = await fetch(`${API_BASE}/entries`);
@@ -86,7 +78,6 @@ async function handleJournalSubmit(e) {
     date: new Date().toISOString()
   };
 
-  // Simulate POST (will not persist)
   try {
     await fetch(`${API_BASE}/entries`, {
       method: 'POST',
@@ -107,9 +98,7 @@ function deleteEntry(entryId) {
   renderEntries();
 }
 
-// ----------------------------
-// EVENT LISTENERS
-// ----------------------------
+
 journalForm.addEventListener('submit', handleJournalSubmit);
 
 entriesList.addEventListener('click', (e) => {
@@ -142,7 +131,7 @@ favoriteQuoteBtn.addEventListener('click', () => {
   }
 });
 
-// Modal Controls
+
 favoritesCount.addEventListener('click', () => {
   favoritesModal.style.display = 'block';
 });
@@ -157,9 +146,7 @@ window.addEventListener('click', (e) => {
   }
 });
 
-// ----------------------------
-// INITIAL SETUP
-// ----------------------------
+
 (async function initializeApp() {
   await fetchQuote();
   await loadInitialEntries();
