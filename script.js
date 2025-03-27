@@ -10,10 +10,13 @@ const favoritesModal = document.getElementById('favorites-modal');
 const closeModal = document.querySelector('.close');
 const favoritesList = document.getElementById('favorites-list');
 
+// Configuration
+const API_BASE = 'https://my-json-server.typicode.com/ThePeterBwire/mindful-moments-journal';
+
 // State Management
 let currentQuote = null;
-let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-let entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+let favorites = [];
+let entries = [];
 
 // ----------------------------
 // QUOTE SYSTEM
@@ -36,37 +39,30 @@ async function fetchQuote() {
 }
 
 // ----------------------------
-// FAVORITES SYSTEM
+// FAVORITES SYSTEM (Memory Only)
 // ----------------------------
 function updateFavorites() {
   favoritesCount.textContent = favorites.length;
-  localStorage.setItem('favorites', JSON.stringify(favorites));
-  
   favoritesList.innerHTML = favorites.map((quote, index) => `
     <div class="favorite-quote-item">
       <p>"${quote.text}" — ${quote.author}</p>
-      <button onclick="removeFavorite(${index})">🗑️</button>
+      <button onclick="favorites.splice(${index}, 1); updateFavorites()">🗑️</button>
     </div>
   `).join('');
 }
 
-function addToFavorites() {
-  if (currentQuote && !favorites.some(f => f.text === currentQuote.text)) {
-    favorites.push(currentQuote);
-    updateFavorites();
+// ----------------------------
+// JOURNAL SYSTEM (Hybrid Approach)
+// ----------------------------
+async function loadInitialEntries() {
+  try {
+    const response = await fetch(`${API_BASE}/entries`);
+    entries = await response.json();
+  } catch (error) {
+    console.log('Using empty entries array');
+    entries = [];
   }
-}
-
-function removeFavorite(index) {
-  favorites.splice(index, 1);
-  updateFavorites();
-}
-
-// ----------------------------
-// JOURNAL SYSTEM (LOCALSTORAGE)
-// ----------------------------
-function saveEntries() {
-  localStorage.setItem('journalEntries', JSON.stringify(entries));
+  renderEntries();
 }
 
 function renderEntries() {
@@ -80,39 +76,35 @@ function renderEntries() {
   `).join('');
 }
 
-function handleJournalSubmit(e) {
+async function handleJournalSubmit(e) {
   e.preventDefault();
   
   const newEntry = {
-    id: Date.now(), // Unique ID
+    id: Date.now(),
     mood: document.getElementById('mood').value,
     reflection: document.getElementById('reflection').value,
     date: new Date().toISOString()
   };
 
-  entries = [...entries, newEntry];
-  saveEntries();
+  // Simulate POST (will not persist)
+  try {
+    await fetch(`${API_BASE}/entries`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newEntry)
+    });
+  } catch (error) {
+    console.log('POST failed (expected)');
+  }
+
+  entries.push(newEntry);
   renderEntries();
   journalForm.reset();
 }
 
 function deleteEntry(entryId) {
-  if (!confirm('Are you sure you want to delete this entry?')) return;
   entries = entries.filter(entry => entry.id !== entryId);
-  saveEntries();
   renderEntries();
-}
-
-function filterEntries(mood) {
-  const filtered = mood === 'all' ? entries : entries.filter(e => e.mood === mood);
-  entriesList.innerHTML = filtered.map(entry => `
-    <div class="entry-card ${entry.mood}">
-      <button class="delete-entry" data-id="${entry.id}">×</button>
-      <p><strong>Mood:</strong> ${entry.mood}</p>
-      <p>${entry.reflection}</p>
-      <small>${new Date(entry.date).toLocaleDateString()}</small>
-    </div>
-  `).join('');
 }
 
 // ----------------------------
@@ -129,12 +121,26 @@ entriesList.addEventListener('click', (e) => {
 
 filterButtons.forEach(button => {
   button.addEventListener('click', () => {
-    filterEntries(button.dataset.mood);
+    const mood = button.dataset.mood;
+    const filtered = mood === 'all' ? entries : entries.filter(e => e.mood === mood);
+    entriesList.innerHTML = filtered.map(entry => `
+      <div class="entry-card ${entry.mood}">
+        <button class="delete-entry" data-id="${entry.id}">×</button>
+        <p><strong>Mood:</strong> ${entry.mood}</p>
+        <p>${entry.reflection}</p>
+        <small>${new Date(entry.date).toLocaleDateString()}</small>
+      </div>
+    `).join('');
   });
 });
 
 newQuoteBtn.addEventListener('click', fetchQuote);
-favoriteQuoteBtn.addEventListener('click', addToFavorites);
+favoriteQuoteBtn.addEventListener('click', () => {
+  if (currentQuote && !favorites.some(f => f.text === currentQuote.text)) {
+    favorites.push(currentQuote);
+    updateFavorites();
+  }
+});
 
 // Modal Controls
 favoritesCount.addEventListener('click', () => {
@@ -154,8 +160,9 @@ window.addEventListener('click', (e) => {
 // ----------------------------
 // INITIAL SETUP
 // ----------------------------
-(function initializeApp() {
-  fetchQuote();
+(async function initializeApp() {
+  await fetchQuote();
+  await loadInitialEntries();
   renderEntries();
   updateFavorites();
 })();

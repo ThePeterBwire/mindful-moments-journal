@@ -1,3 +1,10 @@
 {
-  "entries": []
+  "entries": [
+    {
+      "id": 1,
+      "mood": "happy",
+      "reflection": "Example entry from GitHub!",
+      "date": "2023-09-20T12:00:00.000Z"
+    }
+  ]
 }
