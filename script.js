@@ -75,7 +75,7 @@ async function handleJournalSubmit(e) {
     };
 
     // Save entry
-    await fetch('http://localhost:3000/entries', {
+    await fetch('https://my-json-server.typicode.com/ThePeterBwire/mindful-moments-journal/entries', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newEntry)
@@ -93,7 +93,7 @@ async function handleJournalSubmit(e) {
 
 async function refreshEntries() {
   try {
-    const response = await fetch('http://localhost:3000/entries');
+    const response = await fetch('https://my-json-server.typicode.com/ThePeterBwire/mindful-moments-journal/entries');
     const entries = await response.json();
     renderEntries(entries);
   } catch (error) {
@@ -117,7 +117,7 @@ async function deleteEntry(entryId) {
   if (!confirm('Are you sure you want to delete this entry?')) return;
   
   try {
-    await fetch(`http://localhost:3000/entries/${entryId}`, {
+    await fetch(`https://my-json-server.typicode.com/ThePeterBwire/mindful-moments-journal/entries/${entryId}`, {
       method: 'DELETE'
     });
     await refreshEntries();
@@ -144,7 +144,7 @@ filterButtons.forEach(button => {
   button.addEventListener('click', async () => {
     try {
       const mood = button.dataset.mood;
-      const response = await fetch('http://localhost:3000/entries');
+      const response = await fetch('https://my-json-server.typicode.com/ThePeterBwire/mindful-moments-journal/entries');
       const entries = await response.json();
       
       const filtered = mood === 'all' 
