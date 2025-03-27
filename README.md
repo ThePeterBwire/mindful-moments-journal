@@ -16,7 +16,7 @@ Motivational resources are scattered and impersonal
 3. Solution
 A minimalist web app that:
 ✅ Lets users log moods & reflections privately
-✅ Provides AI-generated inspirational quotes
+✅ Provides inspirational quotes
 ✅ Visualizes emotional trends over time
 ✅ Stores data securely in the browser
 
@@ -42,27 +42,25 @@ Filter entries by mood
 
 Save/delete a favorite quote
 
-View modal interactions
 
 6. Technologies Used
 Frontend	APIs/Backend	Tools
 HTML/CSS/JavaScript	Quotable API	GitHub Pages
-LocalStorage	json-server (dev)	Figma (Wireframing)
-7. Challenges Overcome
-CORS Errors: Switched from ZenQuotes to Quotable API
 
-Data Persistence: Implemented localStorage after json-server limitations on GitHub Pages
+7. Challenges Overcome
+Switched from ZenQuotes to Quotable API
+
+Data Persistence: Limitations on GitHub Pages makes it hard to store entries
 
 UI Responsiveness: Mastered CSS Grid for cross-device compatibility
 
-Async Operations: Learned promise chaining for API calls
 
 8. Future Plans
 AI Analysis: Sentiment scoring of journal entries
 
-Account System: Firebase authentication
+Account System: User accounts will be created in the future
 
-Community Features: Anonymous sharing
+Community Features: Anonymous sharing that might enable users to seek help and also find nearby professionals
 
 Mobile App: React Native port
 
