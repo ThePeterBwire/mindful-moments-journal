@@ -1,3 +1,4 @@
+// DOM Elements
 const journalForm = document.getElementById('journal-form');
 const entriesList = document.getElementById('entries-list');
 const quoteText = document.getElementById('quote-text');
@@ -9,11 +10,13 @@ const favoritesModal = document.getElementById('favorites-modal');
 const closeModal = document.querySelector('.close');
 const favoritesList = document.getElementById('favorites-list');
 
-
+// State Management
 let currentQuote = null;
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
-
+// ----------------------------
+// QUOTE SYSTEM
+// ----------------------------
 async function fetchQuote() {
   try {
     const response = await fetch('https://api.quotable.io/random');
@@ -31,7 +34,9 @@ async function fetchQuote() {
   }
 }
 
-
+// ----------------------------
+// FAVORITES SYSTEM
+// ----------------------------
 function updateFavorites() {
   favoritesCount.textContent = favorites.length;
   localStorage.setItem('favorites', JSON.stringify(favorites));
@@ -56,9 +61,11 @@ function removeFavorite(index) {
   updateFavorites();
 }
 
-
+// ----------------------------
+// JOURNAL SYSTEM
+// ----------------------------
 async function handleJournalSubmit(e) {
-  e.preventDefault(); // Prevent default form submission
+  e.preventDefault();
   
   try {
     const newEntry = {
@@ -74,19 +81,8 @@ async function handleJournalSubmit(e) {
       body: JSON.stringify(newEntry)
     });
 
-    // Refresh entries list
-    const response = await fetch('http://localhost:3000/entries');
-    const entries = await response.json();
-    
-    entriesList.innerHTML = entries.map(entry => `
-      <div class="entry-card ${entry.mood}">
-        <p><strong>Mood:</strong> ${entry.mood}</p>
-        <p>${entry.reflection}</p>
-        <small>${new Date(entry.date).toLocaleDateString()}</small>
-      </div>
-    `).join('');
-
-    // Clear form
+    // Refresh entries
+    await refreshEntries();
     journalForm.reset();
 
   } catch (error) {
@@ -95,8 +91,54 @@ async function handleJournalSubmit(e) {
   }
 }
 
-// Event Listeners
+async function refreshEntries() {
+  try {
+    const response = await fetch('http://localhost:3000/entries');
+    const entries = await response.json();
+    renderEntries(entries);
+  } catch (error) {
+    console.error('Refresh Error:', error);
+    entriesList.innerHTML = '<p>Could not load entries. Please refresh the page.</p>';
+  }
+}
+
+function renderEntries(entries) {
+  entriesList.innerHTML = entries.map(entry => `
+    <div class="entry-card ${entry.mood}">
+      <button class="delete-entry" data-id="${entry.id}">×</button>
+      <p><strong>Mood:</strong> ${entry.mood}</p>
+      <p>${entry.reflection}</p>
+      <small>${new Date(entry.date).toLocaleDateString()}</small>
+    </div>
+  `).join('');
+}
+
+async function deleteEntry(entryId) {
+  if (!confirm('Are you sure you want to delete this entry?')) return;
+  
+  try {
+    await fetch(`http://localhost:3000/entries/${entryId}`, {
+      method: 'DELETE'
+    });
+    await refreshEntries();
+  } catch (error) {
+    console.error('Delete Error:', error);
+    alert('Failed to delete entry. Please try again.');
+  }
+}
+
+// ----------------------------
+// EVENT LISTENERS
+// ----------------------------
 journalForm.addEventListener('submit', handleJournalSubmit);
+
+// Delete Entry (Event Delegation)
+entriesList.addEventListener('click', (e) => {
+  if (e.target.classList.contains('delete-entry')) {
+    const entryId = e.target.dataset.id;
+    deleteEntry(entryId);
+  }
+});
 
 filterButtons.forEach(button => {
   button.addEventListener('click', async () => {
@@ -109,14 +151,7 @@ filterButtons.forEach(button => {
         ? entries 
         : entries.filter(e => e.mood === mood);
         
-      entriesList.innerHTML = filtered.map(entry => `
-        <div class="entry-card ${entry.mood}">
-          <p><strong>Mood:</strong> ${entry.mood}</p>
-          <p>${entry.reflection}</p>
-          <small>${new Date(entry.date).toLocaleDateString()}</small>
-        </div>
-      `).join('');
-      
+      renderEntries(filtered);
     } catch (error) {
       console.error('Filter Error:', error);
     }
@@ -141,17 +176,11 @@ window.addEventListener('click', (e) => {
   }
 });
 
-// Initial Setup
-(async () => {
+// ----------------------------
+// INITIAL SETUP
+// ----------------------------
+(async function initializeApp() {
   await fetchQuote();
-  const response = await fetch('http://localhost:3000/entries');
-  const entries = await response.json();
-  entriesList.innerHTML = entries.map(entry => `
-    <div class="entry-card ${entry.mood}">
-      <p><strong>Mood:</strong> ${entry.mood}</p>
-      <p>${entry.reflection}</p>
-      <small>${new Date(entry.date).toLocaleDateString()}</small>
-    </div>
-  `).join('');
+  await refreshEntries();
   updateFavorites();
 })();

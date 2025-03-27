@@ -1,6 +1,6 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f0f4f8;
+    background-color: #f4f0f8;
     margin: 0;
     padding: 20px;
   }
@@ -130,3 +130,25 @@ body {
   .entry-card.happy { border-left: 5px solid #4CAF50; }
   .entry-card.neutral { border-left: 5px solid #FFC107; }
   .entry-card.sad { border-left: 5px solid #F44336; }
+
+  .delete-entry {
+    background: none;
+    border: none;
+    color: #ff4444;
+    font-size: 1.5rem;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: 1;
+  }
+  
+  .delete-entry:hover {
+    color: #cc0000;
+  }
+  
+  .entry-card {
+    position: relative;
+    padding-right: 35px;
+  }
