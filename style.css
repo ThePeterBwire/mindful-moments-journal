@@ -1,154 +1,206 @@
+:root {
+  --primary-color: #4CAF50;
+  --secondary-color: #FFC107;
+  --accent-color: #F44336;
+  --background: #f0f4f8;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f4f8;
-    margin: 0;
-    padding: 20px;
-  }
-  
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .quote-card {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: var(--background);
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin: 0;
+  padding: 2rem;
+}
 
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
 
-  .quote-controls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    margin-top: 15px;
-  }
+/* Quote Section */
+.quote-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s ease;
+}
 
-  #favorite-quote-btn {
-    background-color: #ff9800;
-  }
+.quote-card:hover {
+  transform: translateY(-2px);
+}
 
-  #favorite-quote-btn:hover {
-  background-color: #f57c00;
-  }
+.quote-controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.25rem;
+}
 
-  #favorites-count {
-  background-color: #e0e0e0;
-  padding: 5px 10px;
-  border-radius: 15px;
+#favorite-quote-btn {
+  background-color: var(--secondary-color);
+  transition: all 0.2s ease;
+}
+
+#favorite-quote-btn:hover {
+  background-color: #ffab00;
+  transform: scale(1.05);
+}
+
+#favorites-count {
+  background-color: #e2e8f0;
+  padding: 0.375rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+#favorites-count:hover {
+  background-color: #cbd5e0;
+  transform: translateY(-1px);
+}
+
+/* Journal Form */
+#journal-form {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+}
+
+#journal-form select,
+#journal-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+#journal-form select:focus,
+#journal-form textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+/* Entries Section */
+.entries {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.entry-card {
+  position: relative;
+  background-color: white;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.entry-card:hover {
+  transform: translateX(4px);
+}
+
+.entry-card.happy { border-left: 4px solid var(--primary-color); }
+.entry-card.neutral { border-left: 4px solid var(--secondary-color); }
+.entry-card.sad { border-left: 4px solid var(--accent-color); }
+
+.delete-entry {
+  background: none;
+  border: none;
+  color: #f44336;
+  font-size: 1.25rem;
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+.delete-entry:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+}
+
+.modal-content {
+  background-color: white;
+  margin: 10vh auto;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  font-size: 1.5rem;
   cursor: pointer;
-  transition: background 0.3s ease;
-  }
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
 
-  #favorites-count:hover {
-  background-color: #bdbdbd;
-  }
+.close:hover {
+  color: var(--text-primary);
+  transform: scale(1.1);
+}
 
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-  }
+.favorite-quote-item {
+  padding: 1rem;
+  margin: 0.75rem 0;
+  background-color: #fff8f0;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .modal-content {
-    background-color: white;
-    margin: 15% auto;
-    padding: 20px;
-    width: 70%;
-    max-width: 500px;
-    border-radius: 10px;
-    position: relative;
-  }
+/* Button Styles */
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
 
-  .close {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-    font-size: 24px;
-    cursor: pointer;
-  }
+button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
 
-  .favorite-quote-item {
-    padding: 10px;
-    margin: 10px 0;
-    background-color: #fff3e0;
-    border-radius: 5px;
-  }
-  
-  #journal-form {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-  }
-  
-  #journal-form select, #journal-form textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-  }
-  
-  .entries {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-  }
-  
-  #entries-list {
-    margin-top: 20px;
-  }
-  
-  .entry-card {
-    background-color: #f8f9fa;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-  }
-  
-  .entry-card.happy { border-left: 5px solid #4CAF50; }
-  .entry-card.neutral { border-left: 5px solid #FFC107; }
-  .entry-card.sad { border-left: 5px solid #F44336; }
-
-  .delete-entry {
-    background: none;
-    border: none;
-    color: #ff4444;
-    font-size: 1.5rem;
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    cursor: pointer;
-    padding: 0 5px;
-    line-height: 1;
-  }
-  
-  .delete-entry:hover {
-    color: #cc0000;
-  }
-  
-  .entry-card {
-    position: relative;
-    padding-right: 35px;
-  }
+button:active {
+  transform: translateY(0);
+}
