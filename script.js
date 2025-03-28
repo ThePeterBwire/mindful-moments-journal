@@ -1,14 +1,13 @@
-// State Management
 let currentQuote = null;
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 let entries = [];
 const API_BASE = 'https://my-json-server.typicode.com/ThePeterBwire/mindful-moments-journal';
 
-// DOM Elements
+
 const favoritesModal = document.getElementById('favorites-modal');
 const closeModal = document.querySelector('.close');
 
-// Quote System
+
 async function fetchQuote() {
     try {
         const response = await fetch('https://api.quotable.io/random');
@@ -23,7 +22,7 @@ async function fetchQuote() {
     }
 }
 
-// Favorites System
+
 function updateFavorites() {
     localStorage.setItem('favorites', JSON.stringify(favorites));
     document.getElementById('favorites-count').textContent = favorites.length;
@@ -36,7 +35,7 @@ function updateFavorites() {
         </div>
     `).join('');
 
-    // Add delete handlers for favorites
+    
     document.querySelectorAll('.remove-favorite').forEach(btn => {
         btn.addEventListener('click', () => {
             const index = parseInt(btn.dataset.index);
@@ -46,7 +45,7 @@ function updateFavorites() {
     });
 }
 
-// Journal System
+
 async function loadEntries() {
     try {
         const response = await fetch(`${API_BASE}/entries`);
@@ -96,7 +95,7 @@ function renderEntries(filter = 'all') {
     `).join('');
 }
 
-// Event Listeners
+
 document.getElementById('journal-form').addEventListener('submit', async e => {
     e.preventDefault();
     const reflection = document.getElementById('reflection').value.trim();
@@ -138,7 +137,7 @@ document.getElementById('favorite-quote-btn').addEventListener('click', () => {
     }
 });
 
-// Modal Controls
+
 document.getElementById('favorites-count').addEventListener('click', () => {
     favoritesModal.style.display = 'block';
 });
@@ -153,7 +152,7 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// Initialization
+
 fetchQuote();
 loadEntries();
 updateFavorites();

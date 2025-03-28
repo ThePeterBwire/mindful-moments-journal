@@ -15,7 +15,7 @@ body {
   line-height: 1.6;
 }
 
-/* Navigation */
+
 .main-nav {
   background: white;
   padding: 1rem 2rem;
@@ -52,14 +52,14 @@ body {
   color: var(--primary-color);
 }
 
-/* Sections */
+
 section {
   padding: 4rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* Hero Section */
+
 #hero {
   background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)),
               url('https://images.unsplash.com/photo-1497864149936-d3163f0c0f4b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
@@ -115,7 +115,7 @@ section {
   transform: scale(1.05);
 }
 
-/* Journal Section */
+
 #journal {
   background: white;
   padding: 2rem;
@@ -162,7 +162,7 @@ section {
   cursor: pointer;
 }
 
-/* Features Section */
+
 #features {
   text-align: center;
 }
@@ -181,13 +181,13 @@ section {
   box-shadow: var(--shadow);
 }
 
-/* About Section */
+
 #about {
   text-align: center;
   background: var(--background);
 }
 
-/* Modal */
+
 .modal {
   display: none;
   position: fixed;
