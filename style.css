@@ -10,39 +10,79 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background-color: var(--background);
+  margin: 0;
   color: var(--text-primary);
   line-height: 1.6;
+}
+
+/* Navigation */
+.main-nav {
+  background: white;
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
   margin: 0;
-  padding: 2rem;
+  padding: 0;
 }
 
-.container {
-  max-width: 800px;
+.nav-links a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: var(--primary-color);
+}
+
+/* Sections */
+section {
+  padding: 4rem 2rem;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
 }
 
+/* Hero Section */
+#hero {
+  background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)),
+              url('https://images.unsplash.com/photo-1497864149936-d3163f0c0f4b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+  background-size: cover;
+  text-align: center;
+  padding: 6rem 2rem;
+}
 
 .quote-card {
   background: white;
-  padding: 1.5rem;
+  padding: 2rem;
   border-radius: 12px;
   box-shadow: var(--shadow);
-  margin-bottom: 1.5rem;
-  transition: transform 0.2s ease;
-}
-
-.quote-card:hover {
-  transform: translateY(-2px);
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .quote-controls {
   display: flex;
-  gap: 0.75rem;
+  gap: 10px;
   align-items: center;
   justify-content: center;
-  margin-top: 1.25rem;
+  margin-top: 1.5rem;
 }
 
 #favorite-quote-btn {
@@ -56,25 +96,35 @@ body {
 }
 
 #favorites-count {
-  background-color: #e2e8f0;
-  padding: 0.375rem 0.75rem;
+  background-color: #e0e0e0;
+  color: var(--text-primary);
+  padding: 5px 10px;
   border-radius: 20px;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  margin-left: 8px;
+  font-size: 0.9rem;
+  min-width: 28px;
+  text-align: center;
+  display: inline-block;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid #d0d0d0;
 }
 
 #favorites-count:hover {
-  background-color: #cbd5e0;
-  transform: translateY(-1px);
+  background-color: #d0d0d0;
+  transform: scale(1.05);
 }
 
-
-#journal-form {
+/* Journal Section */
+#journal {
   background: white;
-  padding: 1.5rem;
+  padding: 2rem;
   border-radius: 12px;
   box-shadow: var(--shadow);
-  margin-bottom: 1.5rem;
+}
+
+#journal-form {
+  margin-bottom: 2rem;
 }
 
 #journal-form select,
@@ -84,36 +134,18 @@ body {
   margin: 0.5rem 0;
   border: 2px solid #e2e8f0;
   border-radius: 8px;
-  transition: all 0.2s ease;
 }
-
-#journal-form select:focus,
-#journal-form textarea:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
-}
-
 
 .entries {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: var(--shadow);
+  margin-top: 2rem;
 }
 
 .entry-card {
   position: relative;
-  background-color: white;
   padding: 1.25rem;
   margin-bottom: 1rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
-}
-
-.entry-card:hover {
-  transform: translateX(4px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .entry-card.happy { border-left: 4px solid var(--primary-color); }
@@ -123,21 +155,39 @@ body {
 .delete-entry {
   background: none;
   border: none;
-  color: #f44336;
-  font-size: 1.25rem;
+  color: var(--accent-color);
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
-  opacity: 0.7;
-  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
-.delete-entry:hover {
-  opacity: 1;
-  transform: scale(1.1);
+/* Features Section */
+#features {
+  text-align: center;
 }
 
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
 
+.feature-card {
+  padding: 1.5rem;
+  border-radius: 8px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+/* About Section */
+#about {
+  text-align: center;
+  background: var(--background);
+}
+
+/* Modal */
 .modal {
   display: none;
   position: fixed;
@@ -145,62 +195,91 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(2px);
+  background: rgba(0,0,0,0.5);
+  z-index: 2000;
 }
 
 .modal-content {
-  background-color: white;
-  margin: 10vh auto;
-  padding: 1.5rem;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
   width: 90%;
   max-width: 500px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  margin: 10vh auto;
+  position: relative;
 }
 
-.close {
-  position: absolute;
-  right: 1rem;
-  top: 1rem;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--text-secondary);
-  transition: all 0.2s ease;
-}
-
-.close:hover {
-  color: var(--text-primary);
-  transform: scale(1.1);
+#favorites-list {
+  max-height: 60vh;
+  overflow-y: auto;
+  margin-top: 1rem;
 }
 
 .favorite-quote-item {
   padding: 1rem;
   margin: 0.75rem 0;
-  background-color: #fff8f0;
+  background: #fff8f0;
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  animation: fadeIn 0.3s ease;
 }
 
+.favorite-quote-item p {
+  margin: 0;
+  flex-grow: 1;
+}
+
+.favorite-quote-item button {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  margin-left: 1rem;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.favorite-quote-item button:hover {
+  filter: brightness(1.1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 button {
-  background-color: var(--primary-color);
+  background: var(--primary-color);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  transition: filter 0.2s ease;
 }
 
 button:hover {
   filter: brightness(1.1);
-  transform: translateY(-1px);
 }
 
-button:active {
-  transform: translateY(0);
+.temp-alert {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary-color);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  animation: slideUp 0.3s ease;
+  z-index: 3000;
+}
+
+@keyframes slideUp {
+  from { bottom: -50px; }
+  to { bottom: 20px; }
 }

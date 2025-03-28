@@ -1,155 +1,159 @@
-const journalForm = document.getElementById('journal-form');
-const entriesList = document.getElementById('entries-list');
-const quoteText = document.getElementById('quote-text');
-const newQuoteBtn = document.getElementById('new-quote-btn');
-const favoriteQuoteBtn = document.getElementById('favorite-quote-btn');
-const favoritesCount = document.getElementById('favorites-count');
-const filterButtons = document.querySelectorAll('.filter-btn');
-const favoritesModal = document.getElementById('favorites-modal');
-const closeModal = document.querySelector('.close');
-const favoritesList = document.getElementById('favorites-list');
-
-
+// State Management
+let currentQuote = null;
+let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+let entries = [];
 const API_BASE = 'https://my-json-server.typicode.com/ThePeterBwire/mindful-moments-journal';
 
+// DOM Elements
+const favoritesModal = document.getElementById('favorites-modal');
+const closeModal = document.querySelector('.close');
 
-let currentQuote = null;
-let favorites = [];
-let entries = [];
-
+// Quote System
 async function fetchQuote() {
-  try {
-    const response = await fetch('https://api.quotable.io/random');
-    if (!response.ok) throw new Error('API request failed');
-    
-    const data = await response.json();
-    currentQuote = {
-      text: data.content,
-      author: data.author || "Unknown"
-    };
-    quoteText.textContent = `"${currentQuote.text}" — ${currentQuote.author}`;
-  } catch (error) {
-    console.error('Quote Error:', error);
-    quoteText.textContent = "Every day is a new opportunity 🌟";
-  }
+    try {
+        const response = await fetch('https://api.quotable.io/random');
+        const data = await response.json();
+        currentQuote = {
+            text: data.content,
+            author: data.author || "Unknown"
+        };
+        document.getElementById('quote-text').textContent = `"${currentQuote.text}" — ${currentQuote.author}`;
+    } catch {
+        document.getElementById('quote-text').textContent = "Today is a great day to start fresh!";
+    }
 }
 
-
+// Favorites System
 function updateFavorites() {
-  favoritesCount.textContent = favorites.length;
-  favoritesList.innerHTML = favorites.map((quote, index) => `
-    <div class="favorite-quote-item">
-      <p>"${quote.text}" — ${quote.author}</p>
-      <button onclick="favorites.splice(${index}, 1); updateFavorites()">🗑️</button>
-    </div>
-  `).join('');
-}
-
-
-async function loadInitialEntries() {
-  try {
-    const response = await fetch(`${API_BASE}/entries`);
-    entries = await response.json();
-  } catch (error) {
-    console.log('Using empty entries array');
-    entries = [];
-  }
-  renderEntries();
-}
-
-function renderEntries() {
-  entriesList.innerHTML = entries.map(entry => `
-    <div class="entry-card ${entry.mood}">
-      <button class="delete-entry" data-id="${entry.id}">×</button>
-      <p><strong>Mood:</strong> ${entry.mood}</p>
-      <p>${entry.reflection}</p>
-      <small>${new Date(entry.date).toLocaleDateString()}</small>
-    </div>
-  `).join('');
-}
-
-async function handleJournalSubmit(e) {
-  e.preventDefault();
-  
-  const newEntry = {
-    id: Date.now(),
-    mood: document.getElementById('mood').value,
-    reflection: document.getElementById('reflection').value,
-    date: new Date().toISOString()
-  };
-
-  try {
-    await fetch(`${API_BASE}/entries`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newEntry)
-    });
-  } catch (error) {
-    console.log('POST failed (expected)');
-  }
-
-  entries.push(newEntry);
-  renderEntries();
-  journalForm.reset();
-}
-
-function deleteEntry(entryId) {
-  entries = entries.filter(entry => entry.id !== entryId);
-  renderEntries();
-}
-
-
-journalForm.addEventListener('submit', handleJournalSubmit);
-
-entriesList.addEventListener('click', (e) => {
-  if (e.target.classList.contains('delete-entry')) {
-    const entryId = Number(e.target.dataset.id);
-    deleteEntry(entryId);
-  }
-});
-
-filterButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const mood = button.dataset.mood;
-    const filtered = mood === 'all' ? entries : entries.filter(e => e.mood === mood);
-    entriesList.innerHTML = filtered.map(entry => `
-      <div class="entry-card ${entry.mood}">
-        <button class="delete-entry" data-id="${entry.id}">×</button>
-        <p><strong>Mood:</strong> ${entry.mood}</p>
-        <p>${entry.reflection}</p>
-        <small>${new Date(entry.date).toLocaleDateString()}</small>
-      </div>
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    document.getElementById('favorites-count').textContent = favorites.length;
+    
+    const favoritesList = document.getElementById('favorites-list');
+    favoritesList.innerHTML = favorites.map((quote, index) => `
+        <div class="favorite-quote-item">
+            <p>"${quote.text}" — ${quote.author}</p>
+            <button class="remove-favorite" data-index="${index}">🗑️</button>
+        </div>
     `).join('');
-  });
+
+    // Add delete handlers for favorites
+    document.querySelectorAll('.remove-favorite').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const index = parseInt(btn.dataset.index);
+            favorites.splice(index, 1);
+            updateFavorites();
+        });
+    });
+}
+
+// Journal System
+async function loadEntries() {
+    try {
+        const response = await fetch(`${API_BASE}/entries`);
+        entries = await response.json();
+    } catch (error) {
+        entries = JSON.parse(localStorage.getItem('entries')) || [];
+    }
+    renderEntries();
+}
+
+async function saveEntry(newEntry) {
+    try {
+        await fetch(`${API_BASE}/entries`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newEntry)
+        });
+    } catch (error) {
+        localStorage.setItem('entries', JSON.stringify([...entries, newEntry]));
+    }
+    entries.push(newEntry);
+    renderEntries();
+}
+
+async function deleteEntry(entryId) {
+    try {
+        await fetch(`${API_BASE}/entries/${entryId}`, {
+            method: 'DELETE'
+        });
+    } catch (error) {
+        console.error('Delete failed');
+    }
+    entries = entries.filter(entry => entry.id !== entryId);
+    localStorage.setItem('entries', JSON.stringify(entries));
+    renderEntries();
+}
+
+function renderEntries(filter = 'all') {
+    const filtered = filter === 'all' ? entries : entries.filter(e => e.mood === filter);
+    document.getElementById('entries-list').innerHTML = filtered.map(entry => `
+        <div class="entry-card ${entry.mood}">
+            <button class="delete-entry" data-id="${entry.id}">×</button>
+            <p><strong>Mood:</strong> ${entry.mood}</p>
+            <p>${entry.reflection}</p>
+            <small>${new Date(entry.date).toLocaleDateString()}</small>
+        </div>
+    `).join('');
+}
+
+// Event Listeners
+document.getElementById('journal-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const reflection = document.getElementById('reflection').value.trim();
+    
+    if (!reflection) {
+        alert('Please write something before saving!');
+        return;
+    }
+
+    const newEntry = {
+        id: Date.now(),
+        mood: document.getElementById('mood').value,
+        reflection,
+        date: new Date().toISOString()
+    };
+    
+    await saveEntry(newEntry);
+    e.target.reset();
 });
 
-newQuoteBtn.addEventListener('click', fetchQuote);
-favoriteQuoteBtn.addEventListener('click', () => {
-  if (currentQuote && !favorites.some(f => f.text === currentQuote.text)) {
-    favorites.push(currentQuote);
-    updateFavorites();
-  }
+document.getElementById('entries-list').addEventListener('click', async e => {
+    if (e.target.classList.contains('delete-entry')) {
+        const entryId = Number(e.target.dataset.id);
+        await deleteEntry(entryId);
+    }
 });
 
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        renderEntries(btn.dataset.mood);
+    });
+});
 
-favoritesCount.addEventListener('click', () => {
-  favoritesModal.style.display = 'block';
+document.getElementById('new-quote-btn').addEventListener('click', fetchQuote);
+document.getElementById('favorite-quote-btn').addEventListener('click', () => {
+    if (currentQuote && !favorites.some(fav => fav.text === currentQuote.text)) {
+        favorites.push(currentQuote);
+        updateFavorites();
+    }
+});
+
+// Modal Controls
+document.getElementById('favorites-count').addEventListener('click', () => {
+    favoritesModal.style.display = 'block';
 });
 
 closeModal.addEventListener('click', () => {
-  favoritesModal.style.display = 'none';
+    favoritesModal.style.display = 'none';
 });
 
 window.addEventListener('click', (e) => {
-  if (e.target === favoritesModal) {
-    favoritesModal.style.display = 'none';
-  }
+    if (e.target === favoritesModal) {
+        favoritesModal.style.display = 'none';
+    }
 });
 
-
-(async function initializeApp() {
-  await fetchQuote();
-  await loadInitialEntries();
-  renderEntries();
-  updateFavorites();
-})();
+// Initialization
+fetchQuote();
+loadEntries();
+updateFavorites();
