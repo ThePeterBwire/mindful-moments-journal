@@ -1,54 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mindful Moments Journal</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mindful Moments Journal</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    
-    <div class="quote-card">
-      <p id="quote-text">"Loading quote..."</p>
-      <div class="quote-controls">
-        <button id="new-quote-btn">New Quote</button>
-        <button id="favorite-quote-btn">❤️ Favorite</button>
-        <span id="favorites-count" title="View Favorites">0</span>
-      </div>
-      <div id="favorites-modal" class="modal">
+    <nav class="main-nav">
+        <div class="nav-brand">Mindful Moments</div>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#journal">Journal</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+    </nav>
+
+
+    <section id="hero">
+        <div class="quote-card">
+            <p id="quote-text">"Loading inspirational quote..."</p>
+            <div class="quote-controls">
+                <button id="new-quote-btn">New Quote</button>
+                <button id="favorite-quote-btn">❤️ Favorite</button>
+                <span id="favorites-count">0</span>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="features">
+        <h2>Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>📝 Daily Journal</h3>
+                <p>Record your thoughts and moods with ease</p>
+            </div>
+            <div class="feature-card">
+                <h3>💖 Favorite Quotes</h3>
+                <p>Save inspiring quotes for later reflection</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔍 Filter Entries</h3>
+                <p>Quickly find past entries by mood</p>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="journal">
+        <h2>Daily Journal</h2>
+        <form id="journal-form">
+            <select id="mood">
+                <option value="happy">😊 Happy</option>
+                <option value="neutral">😐 Neutral</option>
+                <option value="sad">😢 Sad</option>
+            </select>
+            <textarea id="reflection" placeholder="How are you feeling today?" rows="4"></textarea>
+            <button type="submit">Save Entry</button>
+        </form>
+        <div class="entries">
+            <div class="filter-buttons">
+                <button class="filter-btn" data-mood="all">All</button>
+                <button class="filter-btn" data-mood="happy">😊 Happy</button>
+                <button class="filter-btn" data-mood="neutral">😐 Neutral</button>
+                <button class="filter-btn" data-mood="sad">😢 Sad</button>
+            </div>
+            <div id="entries-list"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <h2>About</h2>
+        <p>A simple journal app to track your daily moods and reflections.</p>
+        <button onclick="document.querySelector('#journal').scrollIntoView({ behavior: 'smooth' })">
+            Start Journaling
+        </button>
+    </section>
+
+    <!-- Favorites Modal -->
+    <div class="modal" id="favorites-modal">
         <div class="modal-content">
-          <span class="close">&times;</span>
-          <h3>Favorite Quotes</h3>
-          <div id="favorites-list"></div>
+            <span class="close">&times;</span>
+            <h3>Favorite Quotes</h3>
+            <div id="favorites-list"></div>
         </div>
     </div>
 
-    
-    <form id="journal-form">
-      <h2>How are you feeling today?</h2>
-      <select id="mood">
-        <option value="happy">😊 Happy</option>
-        <option value="neutral">😐 Neutral</option>
-        <option value="sad">😢 Sad</option>
-      </select>
-      <textarea id="reflection" placeholder="Write your reflection here..."></textarea>
-      <button type="submit">Save Entry</button>
-    </form>
-
-    
-    <div class="entries">
-      <h2>Past Entries</h2>
-      <div class="filter-buttons">
-        <button class="filter-btn" data-mood="all">All</button>
-        <button class="filter-btn" data-mood="happy">😊 Happy</button>
-        <button class="filter-btn" data-mood="neutral">😐 Neutral</button>
-        <button class="filter-btn" data-mood="sad">😢 Sad</button>
-      </div>
-      <div id="entries-list"></div>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
